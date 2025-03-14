@@ -1,27 +1,20 @@
-import { getTranslations } from '@/app/lib/i18n';
-import Link from 'next/link';
-export default function Home({
-    params,
-}: {
-    params: { locale: string };
-}) {
-    const t = getTranslations(params.locale as 'en' | 'zh');
-
-    return (
-        <div>
-            <h1>{t.hello}</h1>
-            <p>{t.welcome}</p>
-            <div>
-                <h2>Change Language:</h2>
-                <ul>
-                    <li>
-                        <Link href="/en">English</Link>
-                    </li>
-                    <li>
-                        <Link href="/zh">中文</Link>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    );
+import { getI18n, getScopedI18n, getCurrentLocale } from '../../locales/server'
+ 
+export default async function Page() {
+  const t = await getI18n()
+  const scopedT = await getScopedI18n('hello')
+  const currentLocale = await getCurrentLocale()
+  return (
+    <div>
+      <p>{t('hello')}</p>
+ 
+      {/* Both are equivalent: */}
+      <p>{t('hello.world')}</p>
+      <p>{scopedT('world')}</p>
+ 
+      <p>{t('welcome', { name: 'John' })}</p>
+      <p>{t('welcome', { name: <strong>John</strong> })}</p>
+      <p>Current locale: {currentLocale}</p>
+    </div>
+  )
 }
